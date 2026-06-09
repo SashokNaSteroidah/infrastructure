@@ -73,6 +73,7 @@ services:
     container_name: node_exporter
     restart: unless-stopped
     pid: host
+    privileged: true
     volumes:
       - /proc:/host/proc:ro
       - /sys:/host/sys:ro
