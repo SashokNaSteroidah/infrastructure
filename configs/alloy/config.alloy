@@ -8,6 +8,12 @@ loki.write "local" {
 prometheus.remote_write "local" {
   endpoint {
     url = "http://prometheus:9090/api/v1/write"
+
+    queue_config {
+        capacity             = 10000
+        max_samples_per_send = 2000
+        batch_send_deadline  = "5s"
+      }
   }
 }
 
@@ -27,7 +33,6 @@ prometheus.scrape "cadvisor" {
   targets = [{
     "__address__" = "cadvisor:8080",
     "job"         = "cadvisor_infra",
-    "host"        = constants.hostname,
   }]
   forward_to      = [prometheus.relabel.cadvisor.receiver]
   scrape_interval = "30s"
@@ -39,6 +44,11 @@ prometheus.relabel "cadvisor" {
   rule {
     target_label = "instance"
     replacement  = "infra"
+  }
+
+  rule {
+    target_label = "host"
+    replacement  = constants.hostname
   }
 }
 
