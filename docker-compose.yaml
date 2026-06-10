@@ -44,10 +44,8 @@ services:
   alloy:
     image: grafana/alloy
     container_name: alloy
-    hostname: "infrastructure"
+    hostname: "infra"
     restart: unless-stopped
-    ports:
-      - "12345:12345"
     networks:
       - infra
     volumes:

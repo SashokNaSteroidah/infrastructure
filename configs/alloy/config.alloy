@@ -29,9 +29,19 @@ prometheus.scrape "cadvisor" {
     "job"         = "cadvisor_infra",
     "host"        = constants.hostname,
   }]
-  forward_to      = [prometheus.remote_write.local.receiver]
+  forward_to      = [prometheus.relabel.cadvisor.receiver]
   scrape_interval = "30s"
 }
+
+prometheus.relabel "cadvisor" {
+  forward_to = [prometheus.remote_write.local.receiver]
+
+  rule {
+    target_label = "instance"
+    replacement  = "infra"
+  }
+}
+
 
 
 // DETECT DOCKER CONTAINERS
